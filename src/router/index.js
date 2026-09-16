@@ -14,6 +14,9 @@ const TransportView=()=>import('../domains/transport/presentation/pages/Transpor
 
 const PruebaView=()=>import('../views/PruebaView.vue')
 
+//cloning web application
+
+
 //const navBar = ()=>import('../shared/presentation/components/nav-bar.vue')
 
 const router = createRouter({

@@ -143,7 +143,7 @@
     "cancel": "Cancelar",
     "searchPlaceholder": "Buscar documentos…",
     "clearFilters": "Limpiar filtros",
-    "tableTitle": "Mis documentos ({count})",
+    "tableTitle": "Mis documentos",
     "tableSubtitle": "Lista completa de tus documentos oficiales",
     "error": "No pudimos cargar tus documentos.",
     "headers": {

@@ -1,18 +1,35 @@
-// src/i18n.js
 import { createI18n } from 'vue-i18n'
-import en from './locales/en.json'
-import es from './locales/es.json'
-
-const saved = localStorage.getItem('kapakid:locale') || 'en'
 
 const i18n = createI18n({
-    legacy: false,             // usaremos Composition API (useI18n)
-    locale: saved,             // idioma inicial (persistido si existe)
+    legacy: false,
+    locale: 'en',
     fallbackLocale: 'en',
-    messages: { en, es }
+    messages: {
+        en: {
+            login: {
+                title: 'KapakID',
+                subtitle: 'Access your digital identity',
+                email_label: 'Email/Phone',
+                email_ph: 'you@email.com',
+                password_label: 'Password',
+                sign_in: 'Sign in',
+                signing_in: 'Signing in…'
+            }
+        },
+        es: {
+            login: {
+                title: 'KapakID',
+                subtitle: 'Accede a tu identidad digital',
+                email_label: 'Email/Teléfono',
+                email_ph: 'tu@email.com',
+                password_label: 'Contraseña',
+                sign_in: 'Iniciar sesión',
+                signing_in: 'Iniciando sesión...'
+            }
+        }
+    }
 })
 
-// helper para cambiar y persistir
 export function setLocale(l) {
     i18n.global.locale.value = l
     localStorage.setItem('kapakid:locale', l)

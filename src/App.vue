@@ -12,6 +12,7 @@ export default defineComponent({
 
 
   <!--<router-view />-->
+
   <router-view />
   <!--<header><nav-bar></nav-bar></header>-->
 

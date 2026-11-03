@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node api.js && vite",
-    "build": "node api.js && vite build",
-    "preview": "vite preview",
-    "start:api": "json-server --watch fixtures/db.json --host 0.0.0.0 --port $PORT"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@primeuix/themes": "^1.2.5",

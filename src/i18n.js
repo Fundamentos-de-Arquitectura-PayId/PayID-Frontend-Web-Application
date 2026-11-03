@@ -4,15 +4,18 @@ import es from './locales/es.json'
 
 const saved = localStorage.getItem('kapakid:locale') || 'en'
 
-// Configuración optimizada sin compilador de runtime para producción
 const i18n = createI18n({
     legacy: false,
     locale: saved,
     fallbackLocale: 'en',
-    messages: { en, es },
-    // Desactiva características que rompen el parser en producción en GitHub Pages
+    messages: {
+        en,
+        es
+    },
+    sync: true,
+    silentTranslationWarn: true,
     missingWarn: false,
-    fallbackWarn: false,
+    fallbackWarn: false
 })
 
 export function setLocale(l) {

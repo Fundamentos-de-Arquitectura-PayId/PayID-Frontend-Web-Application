@@ -45,7 +45,6 @@ async function onSubmit() {
     const ok = await loginUseCase({ email: email.value, password: password.value })
     if (ok) router.push({ name: 'home' })
   } catch (e) {
-    // Mapear errores del usecase -> i18n
     const code = String(e?.message || '')
     if (code === 'EMAIL_NOT_FOUND') errors.email = t('errors.email_not_found')
     else if (code === 'INVALID_PASSWORD') errors.password = t('errors.invalid_password')
@@ -63,11 +62,12 @@ async function onSubmit() {
       <input
           id="email"
           v-model.trim="email"
+          type="text"
           class="input"
           :class="{ 'is-invalid': errors.email }"
           :placeholder="t('login.email_ph')"
           autocomplete="username"
-          aria-invalid="true"
+          :aria-invalid="!!errors.email"
           :aria-errormessage="errors.email ? 'err-email' : undefined"
       />
       <p v-if="errors.email" id="err-email" class="error">{{ errors.email }}</p>
@@ -82,7 +82,7 @@ async function onSubmit() {
           class="input"
           :class="{ 'is-invalid': errors.password }"
           autocomplete="current-password"
-          aria-invalid="true"
+          :aria-invalid="!!errors.password"
           :aria-errormessage="errors.password ? 'err-pass' : undefined"
       />
       <p v-if="errors.password" id="err-pass" class="error">{{ errors.password }}</p>

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const LoginView    = () => import('../domains/auth/presentation/pages/LoginView.vue')
 const RegisterView = () => import('../domains/auth/presentation/pages/RegisterView.vue')
@@ -11,8 +11,7 @@ const TechnicalSupportView = () => import('../domains/Views/TechnicalSupportView
 const TransportView = () => import('../domains/transport/presentation/pages/TransportView.vue')
 
 const router = createRouter({
-    // Usa import.meta.env.BASE_URL para sincronizar automáticamente con el 'base' de vite.config.js
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(),
     routes: [
         { path: '/', redirect: '/auth/login' },
         { path: '/auth/login', name: 'login', component: LoginView },

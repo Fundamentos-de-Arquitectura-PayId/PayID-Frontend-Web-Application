@@ -3,8 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  // Dinámico para que tome exactamente el nombre del repo en producción o la raíz en local
-  base: process.env.NODE_ENV === 'production' ? '/PayID-Frontend-Web-Application/' : '/',
+  base: '/PayID-Frontend-Web-Application/',
   plugins: [vue()],
   resolve: {
     alias: {

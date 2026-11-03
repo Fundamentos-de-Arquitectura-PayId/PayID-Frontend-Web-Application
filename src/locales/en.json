@@ -20,7 +20,7 @@
     "password": "Password",
     "submit": "Sign in",
     "email_label": "Email/Phone",
-    "email_ph": "you@email.com",
+    "email_ph": "you{'@'}email.com",
     "password_label": "Password",
     "sign_in": "Sign in",
     "signing_in": "Signing in…"
@@ -36,7 +36,7 @@
     "submit": "Create account",
     "full_name": "Full name",
     "name_ph": "Jane Doe",
-    "email_ph": "you@email.com",
+    "email_ph": "you{'@'}email.com",
     "password_ph": "••••••••",
     "confirm_password": "Confirm password",
     "confirm_ph": "Repeat your password",

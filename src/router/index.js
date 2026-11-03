@@ -14,7 +14,7 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         { path: '/', redirect: '/auth/login' },
-        { path: '/auth/login', name: 'login', component: LoginView },
+        { path: '/auth/login', alias: '/login', name: 'login', component: LoginView },
         { path: '/auth/register', name: 'register', component: RegisterView },
         { path: '/home', name: 'home', component: HomeView },
         { path: '/documents', name: 'documents', component: DocumentsView },

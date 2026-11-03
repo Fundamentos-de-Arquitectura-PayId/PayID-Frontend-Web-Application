@@ -8,6 +8,16 @@
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      // Restore routes redirected through public/404.html on GitHub Pages.
+      if (window.location.search.startsWith('?/')) {
+        const redirected = window.location.search.slice(2)
+        const queryMarker = redirected.indexOf('&%3F')
+        const redirectedPath = (queryMarker < 0 ? redirected : redirected.slice(0, queryMarker)).replace(/~and~/g, '&')
+        const originalSearch = queryMarker < 0 ? '' : '?' + redirected.slice(queryMarker + 4)
+        window.history.replaceState(null, '', window.location.pathname.replace(/\/$/, '') + '/' + redirectedPath + originalSearch + window.location.hash)
+      }
+    </script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

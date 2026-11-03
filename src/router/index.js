@@ -11,7 +11,8 @@ const TechnicalSupportView = () => import('../domains/Views/TechnicalSupportView
 const TransportView = () => import('../domains/transport/presentation/pages/TransportView.vue')
 
 const router = createRouter({
-    history: createWebHistory('/PayID-Frontend-Web-Application/'),  // ← AQUÍ
+    // Usa import.meta.env.BASE_URL para sincronizar automáticamente con el 'base' de vite.config.js
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         { path: '/', redirect: '/auth/login' },
         { path: '/auth/login', name: 'login', component: LoginView },

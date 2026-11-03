@@ -109,31 +109,6 @@
     "accept_terms": "Debes aceptar los Términos y Política de Privacidad.",
     "email_taken": "Este email ya está registrado."
   },
-  "footer": {
-    "copyright": "© 2025 KapakId. Todos los derechos reservados."
-  },
-  "nav-bar": {
-    "home": "Inicio",
-    "profile": "Perfil",
-    "documents": "Documentos",
-    "payments": "Pagos",
-    "transport": "Transporte",
-    "history": "Historial",
-    "notifications": "Notificaciones",
-    "support": "Soporte",
-    "out": "Cerrar Sesión"
-  },
-  "welcome": "bienvenido",
-  "dashboard": {
-    "welcome": "Bienvenido",
-    "manageIdentity": "Administrar identidad",
-    "balance": "Saldo",
-    "ActiveDocuments": "Documentos activos",
-    "notifica": "Alertas y Notificaciones",
-    "PendingPayments": "Pagos Pendientes",
-    "profile": "Perfil",
-    "TransportationBalances": "Saldo de transporte"
-  },
   "transport-card": {
     "title": "Transporte",
     "sub": "Maneja tus tarjetas de transporte y su saldo",
@@ -144,17 +119,15 @@
     "low_balance": "Saldo Bajo",
     "actual_balance": "Saldo actual",
     "recharge": "Recarga"
-
   },
   "trans": "Transacciones Recientes",
   "fast-recharge": {
-    "title": "Recarga Rapida",
+    "title": "Recarga Rápida",
     "subtitle": "Selecciona una tarjeta y recarga saldo fácilmente",
     "load": "Cargando tarjetas",
     "manual": "Monto manual",
     "recharge": "Recargar",
-    "no_cards": "No se encontraron tarjetas validas"
-
+    "no_cards": "No se encontraron tarjetas válidas"
   },
   "documentsView": {
     "title": "Gestión de documentos",
@@ -165,7 +138,7 @@
     "number": "Número de documento",
     "issueDate": "Fecha de emisión",
     "expirationDate": "Fecha de vencimiento",
-    "status": "Estado",
+    "statusLabel": "Estado",
     "save": "Guardar",
     "cancel": "Cancelar",
     "searchPlaceholder": "Buscar documentos…",

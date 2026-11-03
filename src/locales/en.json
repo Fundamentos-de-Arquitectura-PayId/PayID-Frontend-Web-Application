@@ -1,6 +1,8 @@
 {
-  "brand": { "title": "KapakID", "tagline": "Digital ID" },
-
+  "brand": {
+    "title": "KapakID",
+    "tagline": "Digital ID"
+  },
   "layout": {
     "lang_en": "EN",
     "lang_es": "ES",
@@ -11,33 +13,27 @@
     "footer_link_login": "Sign in",
     "forgot": "Forgot your password?"
   },
-
   "login": {
     "title": "KapakID",
     "subtitle": "Access your digital identity",
-
     "email": "Email/Phone",
     "password": "Password",
     "submit": "Sign in",
-
     "email_label": "Email/Phone",
     "email_ph": "you@email.com",
     "password_label": "Password",
     "sign_in": "Sign in",
     "signing_in": "Signing in…"
   },
-
   "register": {
     "title": "Create account",
     "subtitle": "Start your digital identity",
-
     "name": "Full name",
     "email": "Email",
     "password": "Password",
     "confirm": "Confirm password",
     "terms": "I accept the Terms & Privacy Policy",
     "submit": "Create account",
-
     "full_name": "Full name",
     "name_ph": "Jane Doe",
     "email_ph": "you@email.com",
@@ -48,7 +44,6 @@
     "create_account": "Create account",
     "creating": "Creating…"
   },
-
   "errors": {
     "required": "This field is required.",
     "email_invalid": "Enter a valid email.",
@@ -59,10 +54,8 @@
     "invalid_password": "Incorrect password.",
     "unexpected": "Unexpected error. Please try again.",
     "email_exists": "This email is already registered.",
-
     "email_required": "Email is required.",
     "password_required": "Password is required.",
-
     "name_required": "Full name is required.",
     "name_full": "Enter your full name.",
     "password_min": "Minimum 6 characters.",
@@ -79,7 +72,7 @@
     "faq_title": "Frequently Asked Questions",
     "contact_cta": "Still need help? Contact us"
   },
-   "help": {
+  "help": {
     "title": "Help & Support Center",
     "subtitle": "Find answers to your questions and contact us if you need more help.",
     "center_title": "Help Center",
@@ -137,10 +130,8 @@
     "low_balance": "Low Balance",
     "actual_balance": "Actual balance",
     "recharge": "Recharge"
-
-
   },
-  "trans": "Resent Transactions",
+  "trans": "Recent Transactions",
   "fast-recharge": {
     "title": "Fast Recharge",
     "subtitle": "Select a card and recharge it easily",
@@ -148,7 +139,6 @@
     "manual": "Manual Balance",
     "recharge": "Recharge",
     "no_cards": "No valid cards have been found"
-
   },
   "documentsView": {
     "title": "Document management",
@@ -159,7 +149,7 @@
     "number": "Document number",
     "issueDate": "Issue date",
     "expirationDate": "Expiration date",
-    "status": "Status",
+    "statusLabel": "Status",
     "save": "Save",
     "cancel": "Cancel",
     "searchPlaceholder": "Search documents…",

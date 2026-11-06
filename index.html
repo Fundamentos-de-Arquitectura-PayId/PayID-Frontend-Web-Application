@@ -2,11 +2,46 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://avatars.githubusercontent.com/u/228631958?s=48&v=4"/>
+    <link rel="icon" type="image/png" href="%BASE_URL%images/payid-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KapakId by F1ntrack</title>
+    <title>PayID | Identidad digital</title>
   </head>
   <body>
+    <div id="startup-loader" aria-label="Cargando PayID">
+      <div class="startup-loader-content">
+        <div class="startup-mark"><span>P</span></div>
+        <strong>Pay<span>ID</span></strong>
+        <div class="startup-wallet" aria-hidden="true">
+          <i class="startup-bill bill-a">S/</i><i class="startup-bill bill-b">S/</i><i class="startup-bill bill-c">S/</i>
+          <span class="startup-wallet-body"><i></i></span>
+        </div>
+        <small>Tu día, más simple</small>
+        <span class="startup-progress"><i></i></span>
+      </div>
+    </div>
+    <style>
+      html,body{width:100%;min-height:100%;margin:0;overflow:hidden}
+      #startup-loader{position:fixed;z-index:99999;inset:0;width:100%;height:100vh;height:100dvh;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#204b38 0%,#173b2c 46%,#102b21 100%);color:#f2fff5;font-family:system-ui,sans-serif;animation:startup-sweep .65s 1.5s cubic-bezier(.77,0,.18,1) forwards;clip-path:inset(0)}
+      #startup-loader:before{position:absolute;inset:0;content:"";opacity:.14;background-image:radial-gradient(rgba(210,238,219,.38) .7px,transparent .7px);background-size:24px 24px}
+      .startup-loader-content{position:relative;display:flex;align-items:center;flex-direction:column;animation:startup-appear .5s both}
+      .startup-mark{display:grid;width:48px;height:48px;place-items:center;margin-bottom:10px;border:1px solid rgba(182,231,199,.48);border-radius:15px;transform:rotate(45deg)}
+      .startup-mark span{color:#a8e7ba;font-size:22px;font-weight:800;transform:rotate(-45deg)}
+      .startup-loader-content strong{margin-bottom:34px;font-size:18px;letter-spacing:.04em}.startup-loader-content strong span{color:#9ce0b1}
+      .startup-wallet{position:relative;width:116px;height:82px;filter:drop-shadow(0 12px 16px rgba(4,20,13,.25))}
+      .startup-wallet-body{position:absolute;z-index:3;bottom:3px;left:3px;width:110px;height:51px;border:1px solid rgba(176,225,190,.24);border-radius:9px 9px 13px 13px;background:linear-gradient(155deg,#397b55,#24563b 62%,#1d4933);animation:startup-bob 1s ease-in-out infinite}
+      .startup-wallet-body:before{position:absolute;inset:6px;content:"";border:1px dashed rgba(197,232,204,.2);border-radius:5px 5px 9px 9px}
+      .startup-wallet-body i{position:absolute;top:19px;right:10px;width:18px;height:14px;border:1.5px solid #b1e2bd;border-radius:5px}
+      .startup-bill{position:absolute;z-index:2;top:0;left:21px;display:grid;width:74px;height:42px;place-items:center;border:1px solid #77ce97;border-radius:4px;background:linear-gradient(135deg,#c3f0ce,#85d5a4);color:#286644;font-size:13px;font-style:normal;font-weight:700;opacity:0;animation:startup-bill 1.15s ease-in-out infinite}
+      .bill-b{animation-delay:.28s}.bill-c{animation-delay:.56s}
+      .startup-loader-content small{margin:17px 0;color:#e4f2e8;font-size:13px}
+      .startup-progress{width:100px;height:2px;overflow:hidden;border-radius:4px;background:rgba(201,233,211,.16)}.startup-progress i{display:block;width:40%;height:100%;background:#9de0b2;animation:startup-progress 1s ease-in-out infinite}
+      @keyframes startup-sweep{to{clip-path:inset(0 0 0 100%);visibility:hidden}}
+      @keyframes startup-appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes startup-bill{0%{top:0;opacity:0;transform:scale(.82)}15%{opacity:1}42%,85%{top:23px;opacity:1;transform:scale(1)}100%{top:23px;opacity:0}}
+      @keyframes startup-bob{0%,100%{transform:scale(1)}35%{transform:scale(1.025,.975)}42%{transform:scale(1)}}
+      @keyframes startup-progress{from{transform:translateX(-120%)}to{transform:translateX(280%)}}
+      @media(prefers-reduced-motion:reduce){#startup-loader{animation-duration:.01ms;animation-delay:1.5s}.startup-wallet-body,.startup-bill,.startup-progress i{animation:none}.startup-bill{display:none}}
+    </style>
     <div id="app"></div>
     <script>
       // Restore routes redirected through public/404.html on GitHub Pages.

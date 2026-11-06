@@ -13,7 +13,7 @@ export default {
   <footer class="footer">
     <div class="footer-content">
       <div class="brand">
-        <h3>KapakId</h3>
+        <h3>PayID</h3>
         <p>{{ $t('footer.copyright') }}</p>
       </div>
 

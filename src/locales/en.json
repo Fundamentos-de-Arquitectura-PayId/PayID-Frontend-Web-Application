@@ -1,6 +1,6 @@
 {
   "brand": {
-    "title": "KapakID",
+    "title": "PayID",
     "tagline": "Digital ID"
   },
   "layout": {
@@ -13,8 +13,13 @@
     "footer_link_login": "Sign in",
     "forgot": "Forgot your password?"
   },
+  "feedback": {
+    "loginSuccessTitle": "You signed in successfully",
+    "loginSuccessText": "Welcome to PayID. You’re ready to continue.",
+    "dismiss": "Dismiss notification"
+  },
   "login": {
-    "title": "KapakID",
+    "title": "PayID",
     "subtitle": "Access your digital identity",
     "email": "Email/Phone",
     "password": "Password",
@@ -35,14 +40,50 @@
     "terms": "I accept the Terms & Privacy Policy",
     "submit": "Create account",
     "full_name": "Full name",
-    "name_ph": "Jane Doe",
+    "name_ph": "User name",
     "email_ph": "you{'@'}email.com",
     "password_ph": "••••••••",
     "confirm_password": "Confirm password",
     "confirm_ph": "Repeat your password",
+    "segment_title": "How will you use PayID?",
+    "student_title": "Higher education student",
+    "student_description": "Digital student ID, transport and everyday payments.",
+    "family_title": "Parent or guardian",
+    "family_description": "Family documents, expiry alerts and household payments.",
+    "birth_date": "Date of birth",
+    "select_month": "Select month",
+    "select_year": "Select year",
     "accept_terms": "I accept the Terms & Privacy Policy",
     "create_account": "Create account",
     "creating": "Creating…"
+  },
+  "paymentDemo": {
+    "visualTitle": "Your digital identity, ready for what comes next.",
+    "visualNote": "Protected checkout experience",
+    "secure": "Secure payment step",
+    "title": "Add a payment method",
+    "subtitle": "Enter your card details to continue setting up your PayID account.",
+    "demoNotice": "Demo gateway only. No money will be charged and card details are not saved.",
+    "cardLabel": "PAYID MEMBER",
+    "expiryLabel": "EXPIRES",
+    "signature": "Authorized signature",
+    "backCardNote": "For demonstration only",
+    "cardNumber": "Card number",
+    "expiry": "Expiration date",
+    "expiryPlaceholder": "MM/YY",
+    "cvv": "Security code",
+    "submit": "Simulate payment",
+    "continueLater": "Continue later and sign in",
+    "processingTitle": "Confirming your card",
+    "processingText": "Connecting to the PayID demo gateway…",
+    "successTitle": "Card verified",
+    "successText": "Your account is ready. Taking you to sign in…",
+    "errors": {
+      "cardNumber": "Enter a valid card number.",
+      "expiry": "Enter the date as MM/YY.",
+      "expired": "This card has expired.",
+      "cvv": "Enter a 3 or 4 digit security code."
+    }
   },
   "errors": {
     "required": "This field is required.",
@@ -55,15 +96,16 @@
     "email_exists": "This email is already registered.",
     "email_required": "Email is required.",
     "password_required": "Password is required.",
+    "segment_required": "Choose the profile that best describes you.",
     "name_required": "Full name is required.",
     "name_full": "Enter your full name.",
-    "password_min": "Minimum 6 characters.",
+    "password_min": "Password must be at least 8 characters.",
     "confirm_required": "Confirm your password.",
     "accept_terms": "You must accept the Terms & Privacy Policy.",
     "email_taken": "This email is already registered."
   },
   "footer": {
-    "copyright": "© 2025 KapakId. All rights reserved."
+    "copyright": "© 2025 PayID. All rights reserved."
   },
   "support": {
     "title": "Technical Support Center",

@@ -1,26 +1,13 @@
-import {http} from '../../../../shared/services/httpClient.js';
+import { listTransportCards, setTransportCardBalance } from '../../../../shared/services/payidRepository.js'
 
-export async function apiFindDocumentByUserID(userID) {
-    const list = await http.get(`/documentos?usuarioId=${encodeURIComponent(userID)}`);
-
-    return list
-
+export async function apiFindDocumentByUserID() { return listTransportCards() }
+export async function apiFindTransportCardBalance(id) {
+  const cards = await listTransportCards()
+  const card = cards.find(item => String(item.id) === String(id))
+  if (!card) throw new Error('No se encontr? la tarjeta de transporte.')
+  return { balance: card.balance }
 }
-
-export async function apiFindTransportCardBalance(documentID) {
-    const bal = await http.get(`/balance?documentID=${encodeURIComponent(documentID)}`);
-
-    // bal es un array, por ejemplo: [{ documentId: '5', balance: '20' }]
-    if (Array.isArray(bal) && bal.length > 0) {
-        return { balance: Number(bal[0].balance) || 0 };
-    }
-
-    // Si no hay datos, devolvemos balance 0
-    return { balance: 0 };
-
+export async function apiPatchBalanceByDocumentID(id, payload) {
+  const balance = typeof payload === 'number' ? payload : payload.balance
+  return setTransportCardBalance(id, balance)
 }
-export async function apiPatchBalanceByDocumentID(documentID, balance) {
-    const list = await http.patch(`/documentos?documentID=${encodeURIComponent(documentID)}`,balance );
-}
-
-

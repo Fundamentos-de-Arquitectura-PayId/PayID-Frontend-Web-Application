@@ -1,40 +1,13 @@
-import axios from 'axios';
+import { getPayIdProfile, listDocuments, listNotifications, listPayments, listPaymentCards, listTransportCards } from '../shared/services/payidRepository.js'
 
-const apiClient = axios.create({
-    baseURL: 'https://kapak-fake-api.onrender.com',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+const response = async promise => ({ data: await promise })
 
 export default {
-    // --- Usuarios ---
-    getUsuario(id) {
-        // GET /usuarios/1
-        return apiClient.get(`/usuarios/${id}`);
-    },
-
-    // --- Documentos ---
-    getDocumentosPorUsuario(usuarioId) {
-        // GET /documentos?usuarioId=1
-        return apiClient.get(`/documentos?usuarioId=${usuarioId}`);
-    },
-
-    // --- Pagos ---
-    getPagosPorUsuario(usuarioId) {
-        // GET /pagos?usuarioId=1
-        return apiClient.get(`/pagos?usuarioId=${usuarioId}`);
-    },
-
-    // --- Notificaciones ---
-    getNotificacionesPorUsuario(usuarioId) {
-        // GET /notificaciones?usuarioId=1
-        return apiClient.get(`/notificaciones?usuarioId=${usuarioId}`);
-    },
-
-    // --- Perfil ---
-    getProfile() {
-        // Simula un perfil de usuario, puedes adaptarlo según tu JSON
-        return apiClient.get('/usuarios/1');
-    }
-};
+  getUsuario: () => response(getPayIdProfile()),
+  getDocumentosPorUsuario: () => response(listDocuments()),
+  getPagosPorUsuario: () => response(listPayments()),
+  getNotificacionesPorUsuario: () => response(listNotifications()),
+  getProfile: () => response(getPayIdProfile()),
+  getTarjetasPorUsuario: () => response(listTransportCards()),
+  getTarjetasDePago: () => response(listPaymentCards()),
+}

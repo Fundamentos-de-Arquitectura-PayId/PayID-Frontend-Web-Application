@@ -1,6 +1,6 @@
 {
   "brand": {
-    "title": "KapakID",
+    "title": "PayID",
     "tagline": "Identidad digital"
   },
   "layout": {
@@ -46,7 +46,7 @@
     "doc_security": "Prácticas de Seguridad"
   },
   "footer": {
-    "copyright": "© 2025 KapakId. Todos los derechos reservados."
+    "copyright": "© 2025 PayID. Todos los derechos reservados."
   },
   "nav-bar": {
     "home": "Inicio",
@@ -70,8 +70,13 @@
     "profile": "Perfil",
     "TransportationBalances": "Saldo de transporte"
   },
+  "feedback": {
+    "loginSuccessTitle": "¡Iniciaste sesión correctamente!",
+    "loginSuccessText": "Bienvenido a PayID. Ya puedes continuar.",
+    "dismiss": "Cerrar notificación"
+  },
   "login": {
-    "title": "KapakID",
+    "title": "PayID",
     "subtitle": "Accede a tu identidad digital",
     "email_label": "Email/Teléfono",
     "email_ph": "tu{'@'}email.com",
@@ -83,7 +88,7 @@
     "title": "Crear cuenta",
     "subtitle": "Inicia tu identidad digital",
     "full_name": "Nombre completo",
-    "name_ph": "Jane Doe",
+    "name_ph": "Nombre de usuario",
     "email": "Email",
     "email_ph": "tu{'@'}email.com",
     "password": "Contraseña",
@@ -91,19 +96,56 @@
     "confirm_password": "Confirmar contraseña",
     "confirm_ph": "Repite tu contraseña",
     "accept_terms": "Acepto los Términos y Política de Privacidad",
+    "segment_title": "¿Cómo usarás PayID?",
+    "student_title": "Estudiante de educación superior",
+    "student_description": "Credencial estudiantil, transporte y pagos diarios.",
+    "family_title": "Padre, madre o apoderado",
+    "family_description": "Documentos familiares, alertas y pagos del hogar.",
+    "birth_date": "Fecha de nacimiento",
+    "select_month": "Seleccionar mes",
+    "select_year": "Seleccionar año",
     "create_account": "Crear cuenta",
     "creating": "Creando..."
+  },
+  "paymentDemo": {
+    "visualTitle": "Tu identidad digital, lista para lo que sigue.",
+    "visualNote": "Experiencia de pago protegida",
+    "secure": "Paso de pago seguro",
+    "title": "Agrega un método de pago",
+    "subtitle": "Ingresa los datos de tu tarjeta para continuar configurando tu cuenta PayID.",
+    "demoNotice": "Pasarela de demostración. No se realizará ningún cobro ni se guardarán los datos de la tarjeta.",
+    "cardLabel": "MIEMBRO PAYID",
+    "expiryLabel": "VENCE",
+    "signature": "Firma autorizada",
+    "backCardNote": "Solo para demostración",
+    "cardNumber": "Número de tarjeta",
+    "expiry": "Fecha de vencimiento",
+    "expiryPlaceholder": "MM/AA",
+    "cvv": "Código de seguridad",
+    "submit": "Simular pago",
+    "continueLater": "Continuar después e iniciar sesión",
+    "processingTitle": "Verificando tu tarjeta",
+    "processingText": "Conectando con la pasarela demo de PayID…",
+    "successTitle": "Tarjeta verificada",
+    "successText": "Tu cuenta está lista. Te llevamos a iniciar sesión…",
+    "errors": {
+      "cardNumber": "Ingresa un número de tarjeta válido.",
+      "expiry": "Ingresa la fecha como MM/AA.",
+      "expired": "La tarjeta está vencida.",
+      "cvv": "Ingresa un código de seguridad de 3 o 4 dígitos."
+    }
   },
   "errors": {
     "required": "Este campo es obligatorio.",
     "email_invalid": "Ingresa un email válido.",
     "email_required": "El email es obligatorio.",
     "password_required": "La contraseña es obligatoria.",
+    "segment_required": "Elige el perfil que mejor te describe.",
     "email_not_found": "Email no encontrado.",
     "invalid_password": "Contraseña incorrecta.",
     "unexpected": "Error inesperado. Por favor, inténtalo de nuevo.",
     "name_required": "El nombre completo es obligatorio.",
-    "password_min": "Mínimo 6 caracteres.",
+    "password_min": "La contraseña debe tener al menos 8 caracteres.",
     "confirm_required": "Confirma tu contraseña.",
     "password_mismatch": "Las contraseñas no coinciden.",
     "accept_terms": "Debes aceptar los Términos y Política de Privacidad.",

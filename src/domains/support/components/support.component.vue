@@ -1,302 +1,234 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import apiClient from '@/services/api.client.js'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { Check, ChevronLeft, ChevronRight, Copy, Download, Headphones, Mic, MicOff, RotateCcw, Send, ShieldCheck, Volume2, VolumeX, X } from 'lucide-vue-next'
 
-const usuario = ref(null)
-const message = ref('')
-const chatOpen = ref(false)
-const chatMessages = ref([
-  { sender: 'soporte', text: '¡Hola! 👋 Bienvenido al centro de ayuda de Finanzas App.' },
-  { sender: 'soporte', text: '¿En qué puedo ayudarte hoy?' }
-])
+const robotLogo = `${import.meta.env.BASE_URL}images/payid-chatbot-robot.png`
+const openStage = ref('idle')
+const typedTitle = ref('')
+const draft = ref('')
+const chatBody = ref(null)
+const suggestionsViewport = ref(null)
+const messages = ref([])
+const copiedId = ref(null)
+const speakingId = ref(null)
+const listening = ref(false)
+const notice = ref('')
+const canScrollBack = ref(false)
+const canScrollForward = ref(true)
+let titleInterval
+let stageTimeout
+let noticeTimeout
+let copyTimeout
+let recognition
 
-onMounted(async () => {
-  try {
-    const response = await apiClient.get('/usuarios/1')
-    usuario.value = response.data
-  } catch (error) {
-    console.error('Error al cargar usuario:', error)
-  }
+const assistantTitle = 'Asistente PayID'
+const welcomeMessage = '¡Hola! Soy el asistente de PayID. ¿En qué puedo ayudarte hoy?'
+const suggestions = [
+  '¿Cómo gestiono mis documentos?',
+  '¿Cómo reviso mis pagos?',
+  '¿Cómo funciona mi tarjeta digital?',
+  '¿Cómo registro a mi familia?',
+  '¿Qué hago si olvidé mi contraseña?',
+]
+const isVisible = computed(() => openStage.value !== 'idle')
+
+watch(messages, async () => {
+  await nextTick()
+  if (chatBody.value) chatBody.value.scrollTo({ top: chatBody.value.scrollHeight, behavior: 'smooth' })
+}, { deep: true })
+
+watch(openStage, async stage => {
+  if (stage !== 'title') return
+  typedTitle.value = ''
+  let position = 0
+  titleInterval = window.setInterval(() => {
+    position += 1
+    typedTitle.value = assistantTitle.slice(0, position)
+    if (position >= assistantTitle.length) {
+      window.clearInterval(titleInterval)
+      stageTimeout = window.setTimeout(() => { if (openStage.value === 'title') openStage.value = 'chat' }, 280)
+    }
+  }, 58)
 })
 
-const sendMessage = () => {
-  if (message.value.trim() === '') return
-  chatMessages.value.push({ sender: 'usuario', text: message.value })
-  setTimeout(() => {
-    chatMessages.value.push({
-      sender: 'soporte',
-      text: 'Gracias por tu mensaje, te responderemos pronto 💬'
-    })
-  }, 800)
-  message.value = ''
+watch(openStage, stage => {
+  if (stage === 'chat') updateSuggestionScroll()
+  if (stage === 'idle') stopSpeech()
+})
+
+onBeforeUnmount(() => {
+  window.clearInterval(titleInterval)
+  window.clearTimeout(stageTimeout)
+  window.clearTimeout(noticeTimeout)
+  window.clearTimeout(copyTimeout)
+  recognition?.stop()
+  window.speechSynthesis?.cancel()
+})
+
+function openChat() {
+  openStage.value = 'icon'
+  stageTimeout = window.setTimeout(() => { if (openStage.value === 'icon') openStage.value = 'title' }, 720)
 }
 
-const downloadChat = () => {
-  const content = chatMessages.value
-      .map(msg => `${msg.sender === 'usuario' ? 'Tú' : 'Soporte'}: ${msg.text}`)
-      .join('\n')
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = 'conversacion_soporte.txt'
-  link.click()
+function closeChat() {
+  openStage.value = 'idle'
+  typedTitle.value = ''
+  window.clearInterval(titleInterval)
+  window.clearTimeout(stageTimeout)
+  recognition?.stop()
+  listening.value = false
+  stopSpeech()
+}
+
+function updateSuggestionScroll() {
+  const viewport = suggestionsViewport.value
+  if (!viewport) return
+  canScrollBack.value = viewport.scrollLeft > 2
+  canScrollForward.value = viewport.scrollLeft + viewport.clientWidth < viewport.scrollWidth - 2
+}
+
+function moveSuggestions(direction) {
+  const viewport = suggestionsViewport.value
+  if (!viewport) return
+  const chip = viewport.querySelector('button')
+  viewport.scrollBy({ left: direction * (chip ? chip.getBoundingClientRect().width + 8 : viewport.clientWidth * .75), behavior: 'smooth' })
+  window.setTimeout(updateSuggestionScroll, 260)
+}
+
+function showNotice(text) {
+  notice.value = text
+  window.clearTimeout(noticeTimeout)
+  noticeTimeout = window.setTimeout(() => { notice.value = '' }, 2000)
+}
+
+function sendMessage(text = draft.value) {
+  const clean = String(text).trim()
+  if (!clean) return
+  messages.value.push({ id: Date.now(), sender: 'user', text: clean })
+  draft.value = ''
+  window.setTimeout(() => messages.value.push({ id: Date.now() + 1, sender: 'support', text: getAnswer(clean) }), 650)
+}
+
+function getAnswer(question) {
+  const q = question.toLocaleLowerCase('es')
+  if (/document|dni|pasaporte|venc/.test(q)) return 'En Documentos puedes registrar y consultar tus documentos, revisar su estado y estar al tanto de sus fechas de vencimiento.'
+  if (/pago|movimiento|transacci/.test(q)) return 'En Pagos puedes revisar tus movimientos. Si necesitas consultar una recarga de transporte, entra a la sección Transporte.'
+  if (/tarjeta|digital|credencial/.test(q)) return 'Tu tarjeta digital centraliza tu identidad PayID. Puedes verla desde Inicio y usar las secciones disponibles según tu perfil.'
+  if (/familia|padre|madre|apoderad/.test(q)) return 'PayID permite organizar la información familiar desde el perfil de padre, madre o apoderado. Revisa Inicio y Documentos para administrar los datos de tu hogar.'
+  if (/contrase|clave|olvid/.test(q)) return 'En la pantalla de inicio de sesión selecciona “Forgot your password?” para iniciar la recuperación de acceso.'
+  return 'Gracias por escribirnos. Puedo orientarte sobre documentos, pagos, transporte y tu identidad digital PayID. Elige una pregunta sugerida o cuéntame un poco más.'
+}
+
+async function copyMessage(item) {
+  try {
+    await navigator.clipboard.writeText(item.text)
+    copiedId.value = item.id
+    showNotice('Mensaje copiado')
+    window.clearTimeout(copyTimeout)
+    copyTimeout = window.setTimeout(() => { if (copiedId.value === item.id) copiedId.value = null }, 1600)
+  } catch { showNotice('No se pudo copiar el mensaje') }
+}
+
+function stopSpeech() {
+  window.speechSynthesis?.cancel()
+  speakingId.value = null
+}
+
+function listenMessage(item) {
+  if (!window.speechSynthesis || typeof window.SpeechSynthesisUtterance === 'undefined') {
+    showNotice('Este navegador no puede leer en voz alta')
+    return
+  }
+  if (speakingId.value === item.id) { stopSpeech(); return }
+  stopSpeech()
+  const utterance = new SpeechSynthesisUtterance(item.text)
+  utterance.lang = 'es-PE'
+  utterance.onend = () => { speakingId.value = null }
+  utterance.onerror = () => { speakingId.value = null }
+  speakingId.value = item.id
+  window.speechSynthesis.speak(utterance)
+}
+
+function dictate() {
+  const speechWindow = window
+  const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition
+  if (!Recognition) { showNotice('Este navegador no tiene dictado por voz disponible'); return }
+  if (listening.value) { recognition?.stop(); listening.value = false; return }
+  const baseDraft = draft.value
+  recognition = new Recognition()
+  recognition.lang = 'es-PE'
+  recognition.interimResults = true
+  recognition.maxAlternatives = 1
+  recognition.onresult = event => {
+    const transcript = event.results[event.results.length - 1]?.[0]?.transcript
+    if (transcript) draft.value = `${baseDraft}${baseDraft ? ' ' : ''}${transcript}`
+  }
+  recognition.onerror = () => { listening.value = false; showNotice('No se pudo acceder al micrófono') }
+  recognition.onend = () => { listening.value = false }
+  try { recognition.start(); listening.value = true } catch { listening.value = false; showNotice('No se pudo acceder al micrófono') }
+}
+
+function downloadChat() {
+  const allMessages = [{ sender: 'support', text: welcomeMessage }, ...messages.value]
+  const content = allMessages.map(item => `${item.sender === 'user' ? 'Tú' : 'PayID'}: ${item.text}`).join('\n')
+  const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }))
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = 'conversacion-soporte-payid.txt'
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
+function resetChat() {
+  stopSpeech()
+  recognition?.stop()
+  listening.value = false
+  draft.value = ''
+  messages.value = []
+  showNotice('Conversación nueva')
+  nextTick(updateSuggestionScroll)
 }
 </script>
 
 <template>
-  <div class="support-wrapper">
-    <div class="support-container">
-      <div class="header">
-        <h2>Centro de Soporte</h2>
-        <p v-if="usuario">Hola, <b>{{ usuario.firstName }}</b> 👋 ¿Necesitas asistencia?</p>
-        <p v-else>Cargando tus datos...</p>
-      </div>
-
-      <div class="contact-options">
-        <div class="contact-card">
-          <i class="pi pi-envelope"></i>
-          <h3>Correo</h3>
-          <p>support@finanzasapp.com</p>
-        </div>
-        <div class="contact-card">
-          <i class="pi pi-phone"></i>
-          <h3>Teléfono</h3>
-          <p>+51 987 654 321</p>
-        </div>
-        <div class="contact-card highlight">
-          <i class="pi pi-comments"></i>
-          <h3>Chat en línea</h3>
-          <p>Habla con un agente en tiempo real</p>
-          <button class="btn-primary" @click="chatOpen = true">Abrir chat</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL CHAT -->
-    <div v-if="chatOpen" class="modal-overlay" @click.self="chatOpen = false">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>💬 Chat con Soporte</h3>
-          <button class="close-btn" @click="chatOpen = false">&times;</button>
-        </div>
-
-        <div class="chat-body">
-          <div
-              v-for="(msg, index) in chatMessages"
-              :key="index"
-              :class="['chat-message', msg.sender]"
-          >
-            <p>{{ msg.text }}</p>
+  <Teleport to="body">
+  <div class="payid-chat-widget" :class="{ 'is-open': isVisible, 'is-chat-open': openStage === 'chat' }">
+    <Transition name="chat-panel">
+      <section v-if="openStage === 'chat'" class="payid-chat-panel" role="dialog" aria-modal="false" aria-labelledby="payid-chat-title">
+        <Transition name="copy-toast"><div v-if="notice" class="payid-chat-notice" role="status" aria-live="polite"><span><Check :size="13" /></span>{{ notice }}</div></Transition>
+        <header class="payid-chat-header">
+          <span class="payid-chat-avatar"><img :src="robotLogo" alt="Robot PayID" /></span>
+          <div class="payid-chat-heading"><strong id="payid-chat-title">Asistente PayID</strong><span><i></i> Asistente virtual</span></div>
+          <button type="button" class="payid-chat-icon-button reset" aria-label="Nueva conversación" title="Nueva conversación" @click="resetChat"><RotateCcw :size="15" /></button>
+          <button type="button" class="payid-chat-icon-button close" aria-label="Cerrar chat" title="Cerrar chat" @click="closeChat"><X :size="17" /></button>
+        </header>
+        <div class="payid-chat-body">
+          <div ref="chatBody" class="payid-chat-messages" aria-live="polite" aria-relevant="additions text">
+            <div class="payid-chat-message-group support">
+              <div class="payid-chat-message-row support"><span class="payid-chat-message-avatar"><img :src="robotLogo" alt="" /></span><p>{{ welcomeMessage }}</p></div>
+              <div class="payid-chat-message-actions"><button type="button" title="Copiar mensaje" aria-label="Copiar mensaje" @click="copyMessage({ id: 'welcome', text: welcomeMessage })"><Check v-if="copiedId === 'welcome'" :size="13" /><Copy v-else :size="13" /></button><button type="button" :title="speakingId === 'welcome' ? 'Detener lectura' : 'Leer mensaje en voz alta'" :aria-label="speakingId === 'welcome' ? 'Detener lectura' : 'Leer mensaje en voz alta'" @click="listenMessage({ id: 'welcome', text: welcomeMessage })"><VolumeX v-if="speakingId === 'welcome'" :size="13" /><Volume2 v-else :size="13" /></button></div>
+            </div>
+            <div v-for="item in messages" :key="item.id" class="payid-chat-message-group" :class="[item.sender, { speaking: speakingId === item.id }]">
+              <div class="payid-chat-message-row" :class="item.sender"><span v-if="item.sender === 'support'" class="payid-chat-message-avatar"><img :src="robotLogo" alt="" /></span><p>{{ item.text }}</p></div>
+              <div class="payid-chat-message-actions" :class="item.sender"><button type="button" :title="copiedId === item.id ? 'Copiado' : 'Copiar mensaje'" :aria-label="copiedId === item.id ? 'Copiado' : 'Copiar mensaje'" @click="copyMessage(item)"><Check v-if="copiedId === item.id" :size="13" /><Copy v-else :size="13" /></button><template v-if="item.sender === 'support'"><button type="button" :title="speakingId === item.id ? 'Detener lectura' : 'Leer mensaje en voz alta'" :aria-label="speakingId === item.id ? 'Detener lectura' : 'Leer mensaje en voz alta'" @click="listenMessage(item)"><VolumeX v-if="speakingId === item.id" :size="13" /><Volume2 v-else :size="13" /></button></template></div>
+            </div>
+            <div v-if="listening" class="payid-voice-status"><span><i></i><i></i><i></i><i></i></span> Escuchando…</div>
+          </div>
+          <div v-if="!messages.length" class="payid-chat-suggestions" role="group" aria-label="Preguntas sugeridas">
+            <button class="payid-chat-suggestions-arrow" type="button" aria-label="Preguntas anteriores" :disabled="!canScrollBack" @click="moveSuggestions(-1)"><ChevronLeft :size="15" /></button>
+            <div ref="suggestionsViewport" class="payid-chat-suggestions-viewport" @scroll="updateSuggestionScroll"><div class="payid-chat-suggestions-track"><button v-for="(question, index) in suggestions" :key="question" type="button" @click="sendMessage(question)"><span class="suggestion-icon">{{ index + 1 }}</span>{{ question }}</button></div></div>
+            <button class="payid-chat-suggestions-arrow" type="button" aria-label="Más preguntas" :disabled="!canScrollForward" @click="moveSuggestions(1)"><ChevronRight :size="15" /></button>
+          </div>
+          <div class="payid-chat-compose">
+            <button class="payid-chat-mic" :class="{ listening }" type="button" :title="listening ? 'Detener dictado' : 'Dictar mensaje'" :aria-label="listening ? 'Detener dictado' : 'Dictar mensaje'" @click="dictate"><MicOff v-if="listening" :size="15" /><Mic v-else :size="15" /></button>
+            <form class="payid-chat-form" @submit.prevent="sendMessage()"><input v-model="draft" type="text" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje" /><button type="submit" :disabled="!draft.trim()" aria-label="Enviar mensaje"><Send :size="15" /></button></form>
           </div>
         </div>
-
-        <div class="chat-footer">
-          <input
-              type="text"
-              v-model="message"
-              placeholder="Escribe tu mensaje..."
-              @keyup.enter="sendMessage"
-          />
-          <button class="btn-primary" @click="sendMessage">Enviar</button>
-          <button class="btn-secondary" @click="downloadChat">📄 Descargar</button>
-        </div>
-      </div>
-    </div>
+        <footer class="payid-chat-footer"><span><ShieldCheck :size="13" /> No compartas contraseñas ni códigos</span><button type="button" title="Descargar conversación" aria-label="Descargar conversación" @click="downloadChat"><Download :size="14" /></button></footer>
+      </section>
+    </Transition>
+    <Transition name="chat-intro"><div v-if="openStage === 'icon' || openStage === 'title'" class="payid-chat-intro" role="status" aria-live="polite"><img :src="robotLogo" alt="" /><p>{{ typedTitle }}<span v-if="openStage === 'title' && typedTitle.length < assistantTitle.length" class="intro-caret"></span></p></div></Transition>
+    <button type="button" class="payid-chat-launcher" :class="{ 'is-open': isVisible, 'is-attention': !isVisible }" :aria-label="isVisible ? 'Cerrar chat PayID' : 'Abrir chat PayID'" :aria-expanded="isVisible" @click="isVisible ? closeChat() : openChat()"><Transition name="launcher-icon" mode="out-in"><X v-if="isVisible" key="close" :size="21" /><img v-else key="robot" :src="robotLogo" alt="Abrir chat PayID" /></Transition><span v-if="!isVisible" class="launcher-pulse" aria-hidden="true"></span></button>
   </div>
+  </Teleport>
 </template>
-
-<style scoped>
-.support-wrapper {
-  background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 3rem;
-}
-
-.support-container {
-  max-width: 900px;
-  width: 90%;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  margin-top: 160px;
-  animation: fadeIn 0.8s ease;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.header h2 {
-  color: #1e40af;
-  font-weight: 700;
-}
-
-.contact-options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-}
-
-.contact-card {
-  width: 250px;
-  text-align: center;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
-  transition: all 0.3s ease;
-}
-
-.contact-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
-}
-
-.contact-card i {
-  font-size: 2.3rem;
-  color: #2563eb;
-  margin-bottom: 0.5rem;
-  transition: transform 0.3s ease;
-}
-
-.contact-card:hover i {
-  transform: scale(1.1);
-}
-
-.contact-card.highlight {
-  border: 2px solid #2563eb;
-}
-
-.btn-primary {
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  background-color: #1e40af;
-}
-
-.btn-secondary {
-  background-color: #10b981;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-secondary:hover {
-  background-color: #059669;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-
-.modal {
-  background-color: white;
-  border-radius: 1rem;
-  width: 420px;
-  max-width: 95%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: fadeUp 0.4s ease;
-}
-
-.modal-header {
-  background-color: #2563eb;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.close-btn {
-  background: none;
-  color: white;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-}
-
-.chat-body {
-  padding: 1rem;
-  height: 300px;
-  overflow-y: auto;
-  background-color: #f8fafc;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.chat-message {
-  padding: 0.7rem 1rem;
-  border-radius: 1rem;
-  max-width: 80%;
-  word-wrap: break-word;
-  line-height: 1.4;
-}
-
-.chat-message.usuario {
-  background-color: #2563eb;
-  color: white;
-  align-self: flex-end;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
-}
-
-.chat-message.soporte {
-  background-color: #e5e7eb;
-  align-self: flex-start;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.chat-footer {
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.7rem 1rem 1rem;
-  background-color: #f1f5f9;
-}
-
-.chat-footer input {
-  flex: 1;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  outline: none;
-  font-size: 0.9rem;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>

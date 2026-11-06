@@ -1,15 +1,7 @@
 <script setup>
-
-import NavBar from "../../shared/presentation/components/nav-bar.vue";
-import FooterContent from "@/shared/presentation/components/footer-content.vue";
+import TransportPage from "../transport/presentation/pages/TransportView.vue";
 </script>
 
 <template>
-  <nav-bar></nav-bar>
-<TransportView></TransportView>
-
+  <TransportPage />
 </template>
-
-<style scoped>
-
-</style>

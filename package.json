@@ -10,8 +10,9 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.2.5",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.119.0",
     "@tabler/icons-vue": "^3.35.0",
-    "axios": "^1.12.2",
     "chart.js": "^4.5.1",
     "html2canvas": "^1.4.1",
     "json-server": "^1.0.0-beta.3",

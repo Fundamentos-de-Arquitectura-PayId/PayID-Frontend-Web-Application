@@ -3,7 +3,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig(() => ({
-    base: '/PayID-Frontend-Web-Application/',
+    // GitHub Pages serves this repository under a subpath; Vercel serves it at the domain root.
+    base: process.env.VERCEL ? '/' : '/PayID-Frontend-Web-Application/',
     envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
     plugins: [vue()],
     resolve: {
